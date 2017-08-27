@@ -18,6 +18,7 @@ except:
 
 import maya.OpenMayaUI as OpenMayaUI
 import pymel.core as pm
+import maya.cmds as cmds
 
 # -------------------------------------------------------------------------------------------------
 
