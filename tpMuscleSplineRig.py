@@ -827,4 +827,10 @@ class tpMuscleSplineRig(object):
         return self.splineNode
 
 def initUI():
+<<<<<<< HEAD
     tpMuscleSplineRigWin().show()
+=======
+    tpMuscleSplineRigWin()
+    
+initUI()
+>>>>>>> 109d509ac13b4a4850f0a0806de0297eb1e7d074
