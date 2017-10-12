@@ -641,6 +641,8 @@ class tpMuscleSplineRig(object):
 
         # Create controls
         self.controls = []
+        self.consGrps = []
+        self.rootGrps = []
         for i in range(numControls):
             ctrlName = baseName + '_' + muscleSplineName + '_' + str(i) + '_' + suffixCtrl
             ctrl = tpMuscleSplineCtrl(ctrlName, controlType, charSize)
@@ -649,6 +651,8 @@ class tpMuscleSplineRig(object):
             # Create root and auto groups
             rootGrp = pm.group(name=ctrlName.replace(suffixCtrl, rootSuffix), empty=True, world=True)
             consGrp = pm.group(name=ctrlName.replace(suffixCtrl, autoSuffix), empty=True, world=True)
+            self.rootGrps.append(rootGrp)
+            self.consGrps.append(consGrp)
             ctrl.root = rootGrp
             ctrl.auto = consGrp
 
@@ -715,8 +719,8 @@ class tpMuscleSplineRig(object):
 
                 # Get point constraint weight and create point constraint for intermediate controls
                 pct = 1.0 * i / (numControls - 1.0)
-                pm.pointConstraint(self.controls[0], self.consGrps[i], weight=(1.0 - pct))
-                pm.pointConstraint(self.controls[numControls - 1], self.consGrps[i], weight=pct)
+                pm.pointConstraint(self.controls[0].control, self.consGrps[i], weight=(1.0 - pct))
+                pm.pointConstraint(self.controls[numControls - 1].control, self.consGrps[i], weight=pct)
 
                 # Create aim groups
                 # We create one for the forward aim and another one for the back aim, then we have to
@@ -724,17 +728,17 @@ class tpMuscleSplineRig(object):
                 grpAimFwd = pm.group(name=baseName + '_aimFwd_' + str(i) + '_' + suffixGrp, empty=True, world=True)
                 grpAimBck = pm.group(name=baseName + '_aimBack_' + str(i) + '_' + suffixGrp, empty=True, world=True)
                 for grp in [grpAimFwd, grpAimBck]:
-                    snap(grp, self.controls[i])
+                    snap(grp, self.controls[i].control)
                 pm.sets(setRig, include=[self.rootGrps[i], grpAimFwd, grpAimBck])
 
                 # Aim Forward group will aim the last control and Aim Back group will aim to the first control
                 # This will give a twist behaviour on the aim groups
-                aCons = pm.aimConstraint(self.controls[numControls - 1], grpAimFwd, weight=1, aimVector=(0, 1, 0),
+                aCons = pm.aimConstraint(self.controls[numControls - 1].control, grpAimFwd, weight=1, aimVector=(0, 1, 0),
                                          upVector=(1, 0, 0), worldUpVector=(1, 0, 0), worldUpType="objectrotation",
-                                         worldUpObject=self.controls[numControls - 1])
-                bCons = pm.aimConstraint(self.controls[0], grpAimBck, weight=1, aimVector=(0, -1, 0), upVector=(1, 0, 0),
+                                         worldUpObject=self.controls[numControls - 1].control)
+                bCons = pm.aimConstraint(self.controls[0].control, grpAimBck, weight=1, aimVector=(0, -1, 0), upVector=(1, 0, 0),
                                          worldUpVector=(1, 0, 0), worldUpType="objectrotation",
-                                         worldUpObject=self.controls[0])
+                                         worldUpObject=self.controls[0].control)
                 pm.sets(setRig, include=[aCons, bCons])
 
                 # Now we drive the aims with the up info (we do this, only once) ...
@@ -757,10 +761,10 @@ class tpMuscleSplineRig(object):
                     blend.output.connect(cons.worldUpVector)
 
                 # Aim groups also will follow start and end controls (so it will be positioned at the same position of its respective control)
-                pConsFwd = pm.pointConstraint(self.controls[0], grpAimFwd, weight=(1.0 - pct))
-                pConsFwd = pm.pointConstraint(self.controls[numControls - 1], grpAimFwd, weight=pct)
-                pConsBack = pm.pointConstraint(self.controls[0], grpAimBck, weight=(1.0 - pct))
-                pConsBack = pm.pointConstraint(self.controls[numControls - 1], grpAimBck, weight=pct)
+                pConsFwd = pm.pointConstraint(self.controls[0].control, grpAimFwd, weight=(1.0 - pct))
+                pConsFwd = pm.pointConstraint(self.controls[numControls - 1].control, grpAimFwd, weight=pct)
+                pConsBack = pm.pointConstraint(self.controls[0].control, grpAimBck, weight=(1.0 - pct))
+                pConsBack = pm.pointConstraint(self.controls[numControls - 1].control, grpAimBck, weight=pct)
                 pm.sets(setRig, include=[pConsFwd, pConsBack])
 
                 # The auto groups will follow the orientation of the aim groups
