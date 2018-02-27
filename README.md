@@ -6,8 +6,8 @@ Python based Maya Muscle Spline rig builder
 Features
 =========================================================
 * Similar Maya Muscle Spline Workflow
-* Completely control of the final nomenclatura
-* Return tpMuscleSpline rig as a Python object with different acces of the different elements of the Muscle Spline
+* Completely control of the final nomenclature
+* Return tpMuscleSpline rig as a Python object with attributes to access to the different elements of the Muscle Spline
 
 ![](http://cgart3d.com/wp-content/uploads/2017/09/spline1.png)
 
@@ -17,6 +17,5 @@ Copy tpMuscleSpline.py file into your Documents/Maya/(Version)/scripts folder an
 
 ``` python
 import tpMuscleSpline
-reload(tpMuscleSplineRig)
 tpMuscleSpline.initUI()
 ```
