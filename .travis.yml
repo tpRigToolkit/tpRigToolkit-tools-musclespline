@@ -1,0 +1,35 @@
+language: python
+before_install:
+- pip install pycodestyle
+- pip install pytest
+- pip install pytest-cov
+- pip install coveralls
+- pip install sphinx
+- pip install sphinx_rtd_theme
+install:
+- pip install -r requirements.txt
+- python setup.py install
+script:
+- find . -name \*.py -exec pycodestyle --max-line-length=120 --ignore=E402 {} +
+- pytest --cov=tpRigToolkit
+- sphinx-apidoc -f -e -o docs/sphinx tpRigToolkit
+- sphinx-build -M html ./docs/sphinx ./
+after_success:
+- coveralls
+- cd html && touch .nojekyll && cd ../
+deploy:
+  - provider: pages
+    skip_cleanup: true
+    github_token: "$GITHUB_TOKEN"
+    keep_history: true
+    local_dir: html
+    on:
+      branch: master
+  - provider: pypi
+    skip_cleanup: true
+    user: tpoveda
+    password:
+      secure: C3XD6iLgM+sUKW9mpEi6ojAP/DnC/KJRwqtqFefyFFUbLtcloDEHk1XCx1YIwJG2si0H+YEyTP18BW8pGqYTwHXC3qJUB8QrIYdSvSFKWF/X8jAK6OKGj3LSCFRzIzFxEbRiN/HvKoizji9UcFdQAyaqtvWvofiMnNh7+f97vPBFt5r8/21Vm1fdUSp8QegEh0BvcMNcjMgV83cBKwTpczACaq7LUkdDQG/TI3ezjF1p2URa0SVBDp1E14fp2qvBhry6uXXHhYh1P7/Jb+3RjjBPQOsDIeMMT9SS4Kxqyp/i2pfrUXncJbsPIx57+6l9kdkir+0lIDCqEL5OUu6H+i+eQBtOOHRPWpbi1nHqhAKyisjocOpNnm182HQprIU3Z9HNbVyb2GXCMrtHU32qns8+HcrXqntZPDdu78oDf05rxywLx0AOStH4polUqdtMK1uuwFd3BO9jqlhF7GEw2dVhgQRCaGRDKROE6KNdZwT5xxQHL8ORDOygUtWIpl5YeNdijf6D3sniDtGyY7MaotpGvB9FMhbEIqfmSTgY6f9wRLhrgZ31ffT6tPHkjmHCvbCSEtmNeb/AugY7aZ06QFztbpsdVHmEgyMnLevYs+F+xCiQpWod0cZpkRvMQXQ9dWQJijozPVSjJU8adfkSW04qZOBlh9qcdFFxEjuJlno=
+    on:
+      branch: master
+      tags: true

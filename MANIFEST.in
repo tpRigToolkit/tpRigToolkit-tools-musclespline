@@ -1,0 +1,3 @@
+include tpRigToolkit/tools/musclespline/__logging__.ini
+include versioneer.py
+include tpRigToolkit/tools/musclespline/_version.py
