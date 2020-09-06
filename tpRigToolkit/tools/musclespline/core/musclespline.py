@@ -45,7 +45,7 @@ class MuscleSplineTool(tool.DccTool, object):
             'is_checkable': False,
             'is_checked': False,
             'menu_ui': {'label': 'Muscle Spline', 'load_on_startup': False, 'color': '', 'background_color': ''},
-            'size': [425, 600]
+            'size': [425, 817]
         }
         base_tool_config.update(tool_config)
 
