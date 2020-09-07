@@ -89,6 +89,10 @@ class MuscleSplineView(base.BaseWidget, object):
         advanced_setup_widget = QWidget()
         advanced_setup_layout = layouts.VerticalLayout(spacing=2, margins=(2, 2, 2, 2))
         advanced_setup_widget.setLayout(advanced_setup_layout)
+
+        self._advanced_widgets_widget = QWidget()
+        advanced_widgets_layout = layouts.VerticalLayout(spacing=0, margins=(0, 0, 0, 0))
+        self._advanced_widgets_widget.setLayout(advanced_widgets_layout)
         advanced_setup_base_layout = layouts.GridLayout(spacing=5, margins=(2, 2, 2, 2))
         self._advanced_enable_cbx = checkbox.BaseCheckBox('Enable', parent=self)
         ctrl_suffix_lbl = label.BaseLabel('Control Suffix:', parent=self)
@@ -122,8 +126,9 @@ class MuscleSplineView(base.BaseWidget, object):
 
         advanced_setup_layout.addWidget(self._advanced_enable_cbx)
         advanced_setup_layout.addWidget(dividers.Divider())
-        advanced_setup_layout.addLayout(advanced_setup_base_layout)
-        advanced_setup_layout.addLayout(advanced_setup_set_layout)
+        advanced_setup_layout.addWidget(self._advanced_widgets_widget)
+        advanced_widgets_layout.addLayout(advanced_setup_base_layout)
+        advanced_widgets_layout.addLayout(advanced_setup_set_layout)
         advanced_setup_base_layout.addWidget(ctrl_suffix_lbl, 0, 0, Qt.AlignRight)
         advanced_setup_base_layout.addWidget(self._ctrl_suffix_line, 0, 1)
         advanced_setup_base_layout.addWidget(joint_suffix_lbl, 1, 0, Qt.AlignRight)
@@ -176,13 +181,13 @@ class MuscleSplineView(base.BaseWidget, object):
         self._root_group_suffix_line.textChanged.connect(self._controller.change_root_group_suffix)
         self._auto_group_suffix_line.textChanged.connect(self._controller.change_auto_group_suffix)
 
-        self._model.nameChanged.connect(self._name_line.setText)
+        self._model.nameChanged.connect(self._on_name_changed)
         self._model.sizeChanged.connect(self._size_spn.setValue)
         self._model.insertionControlsChanged.connect(self._insertion_ctrls_spn.setValue)
         self._model.drivenJointsChanged.connect(self._num_driven_spn.setValue)
         self._model.constraintMidControlsChanged.connect(self._cns_mid_ctrls_cbx.setChecked)
         self._model.lockControlsScaleChanged.connect(self._lock_ctrls_scale_cbx.setChecked)
-        self._model.enableAdvancedChanged.connect(self._advanced_enable_cbx.setChecked)
+        self._model.enableAdvancedChanged.connect(self._on_enable_advanced_changed)
         self._model.controlSuffixChanged.connect(self._ctrl_suffix_line.setText)
         self._model.jointSuffixChanged.connect(self._joint_suffix_line.setText)
         self._model.groupSuffixChanged.connect(self._grp_suffix_line.setText)
@@ -194,6 +199,8 @@ class MuscleSplineView(base.BaseWidget, object):
         self._model.jointsGroupSuffixChanged.connect(self._joints_group_suffix_line.setText)
         self._model.rootGroupSuffixChanged.connect(self._root_group_suffix_line.setText)
         self._model.autoGroupSuffixChanged.connect(self._auto_group_suffix_line.setText)
+
+        self._create_btn.clicked.connect(self._controller.create_muscle_spline)
 
     def refresh(self):
         self._insertion_type_combo.clear()
@@ -218,3 +225,17 @@ class MuscleSplineView(base.BaseWidget, object):
         self._joints_group_suffix_line.setText(self._model.joints_group_suffix)
         self._root_group_suffix_line.setText(self._model.root_group_suffix)
         self._auto_group_suffix_line.setText(self._model.auto_group_suffix)
+
+        self._check_ui()
+
+    def _check_ui(self):
+        self._create_btn.setEnabled(not self._model.name == '')
+        self._advanced_widgets_widget.setEnabled(self._model.enable_advanced)
+
+    def _on_name_changed(self, value):
+        self._name_line.setText(value)
+        self._check_ui()
+
+    def _on_enable_advanced_changed(self, flag):
+        self._advanced_enable_cbx.setChecked(flag)
+        self._check_ui()

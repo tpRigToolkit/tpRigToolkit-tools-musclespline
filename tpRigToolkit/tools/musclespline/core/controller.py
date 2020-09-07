@@ -80,3 +80,7 @@ class MuscleSplineController(object):
 
     def change_auto_group_suffix(self, value):
         self._model.auto_group_suffix = value
+
+    @tp.Dcc.get_undo_decorator()
+    def create_muscle_spline(self):
+        print('Creating Muscle Spline ...')

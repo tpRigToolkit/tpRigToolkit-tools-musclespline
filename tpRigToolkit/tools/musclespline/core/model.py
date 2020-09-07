@@ -143,7 +143,7 @@ class MuscleSplineModel(QObject, object):
     @joint_suffix.setter
     def joint_suffix(self, value):
         self._joint_suffix = str(value)
-        self.jointSuffixChangede.emit(self._joint_suffix)
+        self.jointSuffixChanged.emit(self._joint_suffix)
 
     @property
     def group_suffix(self):
