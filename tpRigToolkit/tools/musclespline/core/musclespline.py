@@ -19,7 +19,7 @@ import tpDcc as tp
 from tpDcc.core import tool
 from tpDcc.libs.qt.widgets import toolset
 
-from tpRigToolkit.tools.jointorient.core import jointorientclient
+from tpRigToolkit.tools.musclespline.core import musclesplineclient
 
 # Defines ID of the tool
 TOOL_ID = 'tpRigToolkit-tools-musclespline'
@@ -45,7 +45,7 @@ class MuscleSplineTool(tool.DccTool, object):
             'is_checkable': False,
             'is_checked': False,
             'menu_ui': {'label': 'Muscle Spline', 'load_on_startup': False, 'color': '', 'background_color': ''},
-            'size': [425, 817]
+            'size': [450, 840]
         }
         base_tool_config.update(tool_config)
 
@@ -63,7 +63,7 @@ class MuscleSplineToolset(toolset.ToolsetWidget, object):
 
     def setup_client(self):
 
-        self._client = jointorientclient.JointOrientClient()
+        self._client = musclesplineclient.MuscleSplineClient()
         self._client.signals.dccDisconnected.connect(self._on_dcc_disconnected)
 
         if not tp.is_standalone():

@@ -15,14 +15,18 @@ class MuscleSplineModel(QObject, object):
     nameChanged = Signal(str)
     sizeChanged = Signal(float)
     insertionControlsChanged = Signal(int)
+    controlTypeChanged = Signal(str)
     drivenJointsChanged = Signal(int)
+    drivenTypeChanged = Signal(str)
     constraintMidControlsChanged = Signal(bool)
     lockControlsScaleChanged = Signal(bool)
+    lockJiggleAttributesChanged = Signal(bool)
     enableAdvancedChanged = Signal(bool)
     controlSuffixChanged = Signal(str)
     jointSuffixChanged = Signal(str)
     groupSuffixChanged = Signal(str)
     drivenSuffixChanged = Signal(str)
+    createSetsChanged = Signal(bool)
     mainMuscleSetNameChanged = Signal(str)
     muscleSetSuffixChanged = Signal(str)
     muscleSplineNameChanged = Signal(str)
@@ -35,19 +39,23 @@ class MuscleSplineModel(QObject, object):
         super(MuscleSplineModel, self).__init__()
 
         self._insertion_types = ['cube', 'circleY', 'null']
-        self._driven_types = 'joint', 'circleY', 'null'
+        self._driven_types = ['joint', 'circleY', 'null']
 
         self._name = 'Char01_Spine'
         self._size = 1.0
         self._insertion_controls = 3
+        self._control_type = self._insertion_types[0]
         self._driven_joints = 5
+        self._driven_type = self._driven_types[0]
         self._constraint_mid_controls = False
         self._lock_controls_scale = True
+        self._lock_jiggle_attributes = False
         self._enable_advanced = False
         self._control_suffix = 'ctrl'
         self._joint_suffix = 'jnt'
         self._group_suffix = 'grp'
         self._driven_suffix = 'drv'
+        self._create_sets = True
         self._main_muscle_set_name = 'setMUSCLERIGS'
         self._muscle_set_suffix = 'RIG'
         self._muscle_spline_name = 'muscleSpline'
@@ -89,7 +97,16 @@ class MuscleSplineModel(QObject, object):
     @insertion_controls.setter
     def insertion_controls(self, value):
         self._insertion_controls = int(value)
-        self.insertionControlsChanged.emit(value)
+        self.insertionControlsChanged.emit(self._insertion_controls)
+
+    @property
+    def control_type(self):
+        return self._control_type
+
+    @control_type.setter
+    def control_type(self, value):
+        self._control_type = str(value)
+        self.controlTypeChanged.emit(self._control_type)
 
     @property
     def driven_joints(self):
@@ -99,6 +116,15 @@ class MuscleSplineModel(QObject, object):
     def driven_joints(self, value):
         self._driven_joints = int(value)
         self.drivenJointsChanged.emit(self._driven_joints)
+
+    @property
+    def driven_type(self):
+        return self._driven_type
+
+    @driven_type.setter
+    def driven_type(self, value):
+        self._driven_type = str(value)
+        self.drivenTypeChanged.emit(self._driven_type)
 
     @property
     def constraint_mid_controls(self):
@@ -117,6 +143,15 @@ class MuscleSplineModel(QObject, object):
     def lock_controls_scale(self, flag):
         self._lock_controls_scale = bool(flag)
         self.lockControlsScaleChanged.emit(self._lock_controls_scale)
+
+    @property
+    def lock_jiggle_attributes(self):
+        return self._lock_jiggle_attributes
+
+    @lock_jiggle_attributes.setter
+    def lock_jiggle_attributes(self, flag):
+        self._lock_jiggle_attributes = bool(flag)
+        self.lockJiggleAttributesChanged.emit(self._lock_jiggle_attributes)
 
     @property
     def enable_advanced(self):
@@ -162,6 +197,15 @@ class MuscleSplineModel(QObject, object):
     def driven_suffix(self, value):
         self._driven_suffix = str(value)
         self.drivenSuffixChanged.emit(self._driven_suffix)
+
+    @property
+    def create_sets(self):
+        return self._create_sets
+
+    @create_sets.setter
+    def create_sets(self, flag):
+        self._create_sets = bool(flag)
+        self.createSetsChanged.emit(self._create_sets)
 
     @property
     def main_muscle_set_name(self):
@@ -225,3 +269,11 @@ class MuscleSplineModel(QObject, object):
     def auto_group_suffix(self, value):
         self._auto_group_suffix = str(value)
         self.autoGroupSuffixChanged.emit(self._auto_group_suffix)
+
+    def get_properties_dict(self):
+        properties_dict = dict()
+        properties = [prop_Name for prop_Name, obj in self.__class__.__dict__.items() if isinstance(obj, property)]
+        for property_name in properties:
+            properties_dict[property_name] = getattr(self, property_name)
+
+        return properties_dict

@@ -18,3 +18,20 @@ from tpDcc.core import client
 class MuscleSplineClient(client.DccClient, object):
 
     PORT = 19231
+
+    # =================================================================================================================
+    # BASE
+    # =================================================================================================================
+
+    def create_muscle_spline(self, **kwargs):
+        cmd = {
+            'cmd': 'create_muscle_spline'
+        }
+        cmd.update(kwargs)
+
+        reply_dict = self.send(cmd)
+
+        if not self.is_valid_reply(reply_dict):
+            return False
+
+        return reply_dict['success']
