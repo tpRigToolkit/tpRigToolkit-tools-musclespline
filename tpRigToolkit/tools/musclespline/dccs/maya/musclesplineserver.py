@@ -28,7 +28,7 @@ class MuscleSplineServer(server.DccServer, object):
         else:
             super(MuscleSplineServer, self)._process_command(command_name, data_dict, reply_dict)
 
-    @tp.Dcc.get_undo_decorator()
+    @tp.Dcc.undo_decorator()
     def create_muscle_spline(self, data, reply):
 
         muscle_spline = musclespline.MuscleSpline(**data)
