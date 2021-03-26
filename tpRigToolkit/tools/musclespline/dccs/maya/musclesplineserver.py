@@ -10,12 +10,14 @@ __license__ = "MIT"
 __maintainer__ = "Tomas Poveda"
 __email__ = "tpovedatd@gmail.com"
 
-import tpDcc as tp
+import logging
+
+from tpDcc import dcc
 from tpDcc.core import server
 
 from tpRigToolkit.dccs.maya.core import musclespline
 
-LOGGER = tp.LogsMgr().get_logger('tpRigToolkit-tools-musclespline')
+LOGGER = logging.getLogger('tpRigToolkit-tools-musclespline')
 
 
 class MuscleSplineServer(server.DccServer, object):
@@ -28,7 +30,7 @@ class MuscleSplineServer(server.DccServer, object):
         else:
             super(MuscleSplineServer, self)._process_command(command_name, data_dict, reply_dict)
 
-    @tp.Dcc.undo_decorator()
+    @dcc.undo_decorator()
     def create_muscle_spline(self, data, reply):
 
         muscle_spline = musclespline.MuscleSpline(**data)

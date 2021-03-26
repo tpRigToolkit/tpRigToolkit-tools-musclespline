@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 
 """
-Muscle Spline  widget controller class implementation
+Muscle Spline widget controller class implementation
 """
 
 from __future__ import print_function, division, absolute_import
 
-import tpDcc as tp
+import logging
 
-LOGGER = tp.LogsMgr().get_logger('tpRigToolkit-tools-musclespline')
+LOGGER = logging.getLogger('tpRigToolkit-tools-musclespline')
 
 
 class MuscleSplineController(object):

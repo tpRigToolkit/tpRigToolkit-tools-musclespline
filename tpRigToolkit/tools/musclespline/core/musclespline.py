@@ -13,13 +13,16 @@ __maintainer__ = "Tomas Poveda"
 __email__ = "tpovedatd@gmail.com"
 
 import os
+import logging
 import importlib
 
-import tpDcc as tp
+from tpDcc import dcc
 from tpDcc.core import tool
 from tpDcc.libs.qt.widgets import toolset
 
 from tpRigToolkit.tools.musclespline.core import musclesplineclient
+
+LOGGER = logging.getLogger('tpRigToolkit-tools-musclespline')
 
 # Defines ID of the tool
 TOOL_ID = 'tpRigToolkit-tools-musclespline'
@@ -66,8 +69,8 @@ class MuscleSplineToolset(toolset.ToolsetWidget, object):
         self._client = musclesplineclient.MuscleSplineClient()
         self._client.signals.dccDisconnected.connect(self._on_dcc_disconnected)
 
-        if not tp.is_standalone():
-            dcc_mod_name = '{}.dccs.{}.musclesplineserver'.format(TOOL_ID.replace('-', '.'), tp.Dcc.get_name())
+        if not dcc.is_standalone():
+            dcc_mod_name = '{}.dccs.{}.musclesplineserver'.format(TOOL_ID.replace('-', '.'), dcc.get_name())
             try:
                 mod = importlib.import_module(dcc_mod_name)
                 if hasattr(mod, 'MuscleSplineServer'):
@@ -75,7 +78,7 @@ class MuscleSplineToolset(toolset.ToolsetWidget, object):
                     self._client.set_server(server)
                     self._update_client()
             except Exception as exc:
-                tp.logger.warning(
+                LOGGER.warning(
                     'Impossible to launch Muscle Spline server! Error while importing: {} >> {}'.format(
                         dcc_mod_name, exc))
                 return
